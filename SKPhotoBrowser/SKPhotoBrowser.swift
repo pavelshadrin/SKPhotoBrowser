@@ -204,7 +204,6 @@ open class SKPhotoBrowser: UIViewController {
     }
     
     open func prepareForClosePhotoBrowser() {
-        cancelControlHiding()
         if let panGesture = panGesture {
             view.removeGestureRecognizer(panGesture)
         }
@@ -249,7 +248,6 @@ open class SKPhotoBrowser: UIViewController {
         
         activityViewController = UIActivityViewController(activityItems: activityItems, applicationActivities: nil)
         activityViewController.completionWithItemsHandler = { (activity, success, items, error) in
-            self.hideControlsAfterDelay()
             self.activityViewController = nil
         }
         if UI_USER_INTERFACE_IDIOM() == .phone {
@@ -302,7 +300,6 @@ public extension SKPhotoBrowser {
             let pageFrame = frameForPageAtIndex(index)
             pagingScrollView.jumpToPageAtIndex(pageFrame)
         }
-        hideControlsAfterDelay()
     }
     
     func photoAtIndex(_ index: Int) -> SKPhotoProtocol {
@@ -315,20 +312,6 @@ public extension SKPhotoBrowser {
     
     @objc func gotoNextPage() {
         jumpToPageAtIndex(currentPageIndex + 1)
-    }
-    
-    func cancelControlHiding() {
-        if controlVisibilityTimer != nil {
-            controlVisibilityTimer.invalidate()
-            controlVisibilityTimer = nil
-        }
-    }
-    
-    func hideControlsAfterDelay() {
-        // reset
-        cancelControlHiding()
-        // start
-        controlVisibilityTimer = Timer.scheduledTimer(timeInterval: 4.0, target: self, selector: #selector(SKPhotoBrowser.hideControls(_:)), userInfo: nil, repeats: false)
     }
     
     func hideControls() {
@@ -579,9 +562,6 @@ private extension SKPhotoBrowser {
     }
 
     func setControlsHidden(_ hidden: Bool, animated: Bool, permanent: Bool) {
-        // timer update
-        cancelControlHiding()
-        
         // scroll animation
         pagingScrollView.setControlsHidden(hidden: hidden)
 
@@ -591,9 +571,6 @@ private extension SKPhotoBrowser {
         // action view animation
         actionView.animate(hidden: hidden)
         
-        if !hidden && !permanent {
-            hideControlsAfterDelay()
-        }
         setNeedsStatusBarAppearanceUpdate()
     }
 }
@@ -620,8 +597,6 @@ extension SKPhotoBrowser: UIScrollViewDelegate {
     }
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        hideControlsAfterDelay()
-        
         let currentIndex = pagingScrollView.contentOffset.x / pagingScrollView.frame.size.width
         delegate?.didScrollToIndex?(self, index: Int(currentIndex))
     }

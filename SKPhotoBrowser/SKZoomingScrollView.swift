@@ -240,9 +240,6 @@ open class SKZoomingScrollView: UIScrollView {
             let zoomRect = zoomRectForScrollViewWith(maximumZoomScale, touchPoint: touchPoint)
             zoom(to: zoomRect, animated: true)
         }
-        
-        // delay control
-        browser?.hideControlsAfterDelay()
     }
 }
 
@@ -254,7 +251,7 @@ extension SKZoomingScrollView: UIScrollViewDelegate {
     }
     
     public func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
-        browser?.cancelControlHiding()
+        
     }
     
     public func scrollViewDidZoom(_ scrollView: UIScrollView) {
