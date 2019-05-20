@@ -11,7 +11,7 @@ import UIKit
 open class SKCaptionView: UIView {
     fileprivate var photo: SKPhotoProtocol?
     fileprivate var photoLabel: UILabel!
-    fileprivate var photoLabelPadding: CGFloat = 10
+    fileprivate var photoLabelPadding: CGFloat = 16
     
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
